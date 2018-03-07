@@ -12,8 +12,6 @@ public:
    bool isValid() const;
 private:
     cube c;
-    static const cube FILLED_CUBE;
-    static const cube EMPTY_CUBE;
     currentCubes cc;
 };
 

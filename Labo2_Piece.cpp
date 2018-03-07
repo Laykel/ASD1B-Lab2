@@ -1,5 +1,6 @@
 #include "Labo2_Piece.h"
 
+using namespace std;
 Piece::Piece(const cube& c) {
     this->c = c;
     for(int x = 0; x < DIM; x++)
@@ -20,4 +21,32 @@ cube Piece::shift(bool& sucess, short dx, short dy, short dz) const{
             }
     sucess = (ctr == blockCount);
     return toReturn;
+}
+Piece Piece::rotate(){
+    cube rc = EMPTY_CUBE;
+    for(int x = 0; x < DIM; x++)
+        for(int y = 0; y < DIM; y++)
+            for(int z = 0; z < DIM; z++)
+               rc[x][y][z] = c[z][x][y];
+    
+    return Piece(rc);
+}
+
+ostream& operator<< (ostream& os, const Piece& p){
+    cout << "     top       mid      bottom\n";
+    for(int y = 0; y < DIM; y++){
+        for(int x = 0; x < DIM; x++){
+            cout << "[";
+            for(int z = 0; z < DIM; z++){
+               cout << p.c[z][x][y];
+               if(z < DIM - 1)
+                   cout << ", ";
+            }
+            cout << "] ";
+        }
+        cout << endl;
+    }
+        cout << endl;
+    
+    return os;
 }
