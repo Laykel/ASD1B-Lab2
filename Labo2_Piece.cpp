@@ -1,21 +1,21 @@
 #include "Labo2_Piece.h"
 
 using namespace std;
-Piece::Piece(const cube& c) {
+Piece::Piece(const Cube& c) {
     this->c = c;
-    for(int x = 0; x < DIM; x++)
-        for(int y = 0; y < DIM; y++)
-            for(int z = 0; z < DIM; z++)
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++)
                 blockCount += c[x][y][z];
 }
 
 
-cube Piece::shift(bool& sucess, short dx, short dy, short dz) const{
-    cube toReturn = EMPTY_CUBE;
+Cube Piece::shift(bool& sucess, short dx, short dy, short dz) const{
+    Cube toReturn = EMPTY_CUBE;
     unsigned ctr = 0;
-    for(int x = 0; x < DIM - dx; x++)
-        for(int y = 0; y < DIM - dy; y++)
-            for(int z = 0; z < DIM - dz; z++){
+    for(int x = 0; x < length - dx; x++)
+        for(int y = 0; y < length - dy; y++)
+            for(int z = 0; z < length - dz; z++){
                 ctr += c[x][y][z];
                 toReturn[x + dx][y + dy][z + dz] = c[x][y][z];
             }
@@ -23,30 +23,16 @@ cube Piece::shift(bool& sucess, short dx, short dy, short dz) const{
     return toReturn;
 }
 Piece Piece::rotate(){
-    cube rc = EMPTY_CUBE;
-    for(int x = 0; x < DIM; x++)
-        for(int y = 0; y < DIM; y++)
-            for(int z = 0; z < DIM; z++)
+    Cube rc = EMPTY_CUBE;
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++)
                rc[x][y][z] = c[z][x][y];
     
     return Piece(rc);
 }
 
 ostream& operator<< (ostream& os, const Piece& p){
-    cout << "     top       mid      bottom\n";
-    for(int y = 0; y < DIM; y++){
-        for(int x = 0; x < DIM; x++){
-            cout << "[";
-            for(int z = 0; z < DIM; z++){
-               cout << p.c[x][y][z];
-               if(z < DIM - 1)
-                   cout << ", ";
-            }
-            cout << "] ";
-        }
-        cout << endl;
-    }
-        cout << endl;
-    
+    os << p.c;
     return os;
 }

@@ -2,11 +2,11 @@
 #define PIECES_H
 #include "Labo2_Piece.h"
 
-// defines pour reduire la taille du header, Empty line & Empty Square
+// defines pour reduire la taille du header, Empty Line & Empty Square
 #define EL {0,0,0}
 #define ES {EL,EL,EL}
 
-    cube L1({{{0,0,1},
+    Cube L1({{{0,0,1},
               {0,0,1},
               {0,1,1}},
               ES,
@@ -54,7 +54,7 @@
               ES,
               ES});
               
-    cube C1({{{1,1,0},
+    Cube C1({{{1,1,0},
               {1,0,0},
               EL},
               ES,
@@ -78,7 +78,7 @@
               ES,
               ES});
               
-    cube T1({{{1,1,1},
+    Cube T1({{{1,1,1},
               {0,1,0},
               EL},
               ES,
@@ -102,7 +102,7 @@
               ES,
               ES});
               
-    cube S1({{{1,0,0},
+    Cube S1({{{1,0,0},
               {1,1,0},
               {0,1,0}},
               ES,

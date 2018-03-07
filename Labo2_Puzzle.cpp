@@ -1,26 +1,26 @@
-#include "Labo2_Cube.h"
+#include "Labo2_Puzzle.h"
 
-Cube::Cube(const cube& c) {
+Puzzle::Puzzle(const Cube& c) {
     this->c = c;
 }
 
 
-bool Cube::isFilled() const{
-    for(square s : c)
-        for(line l : s)
+bool Puzzle::isFilled() const{
+    for(Square s : c)
+        for(Line l : s)
             for (int s : l)
                 if (s != 1)
                     return false;
     return true;
 }
 
-bool Cube::addCube(const cube& c){
+bool Puzzle::addCube(const Cube& c){
     this->c += c;
     cc.push_back(c);
     return isValid();
 }
 
-bool Cube::addPiece(const Piece& p, short dx, short dy, short dz){
+bool Puzzle::addPiece(const Piece& p, short dx, short dy, short dz){
     bool validShift;
     c = p.shift(validShift, dx, dy, dz);
     if(validShift)
@@ -28,9 +28,9 @@ bool Cube::addPiece(const Piece& p, short dx, short dy, short dz){
     return validShift && isValid();
 }
 
-bool Cube::isValid() const{
-    for(square s : c)
-        for(line l : s)
+bool Puzzle::isValid() const{
+    for(Square s : c)
+        for(Line l : s)
             for (int s : l)
                 if (s > 1)
                     return false;

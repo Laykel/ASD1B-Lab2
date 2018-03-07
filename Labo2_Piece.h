@@ -5,12 +5,12 @@
 
 class Piece {
 public:
-    Piece(const cube& c);
-    cube shift(bool& sucess, short dx = 0, short dy = 0, short dz = 0) const;
+    Piece(const Cube& c);
+    Cube shift(bool& sucess, short dx = 0, short dy = 0, short dz = 0) const;
     Piece rotate();
     friend std::ostream& operator<< (std::ostream& os, const Piece& p);
 private:
-    cube c;
+    Cube c;
     unsigned blockCount = 0;
 };
 

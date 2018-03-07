@@ -2,7 +2,7 @@
 #include <iostream>
 #include <typeinfo>
 #include "Labo2_Types.h"
-#include "Labo2_Cube.h"
+#include "Labo2_Puzzle.h"
 #include "Labo2_Piece.h"
 #include "Labo2_Pieces.h"
 
