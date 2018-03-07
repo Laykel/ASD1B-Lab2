@@ -1,8 +1,10 @@
 #include <cstdlib>
+#include "Labo2_Cube.h"
 
 using namespace std;
 
-int main(int argc, char** argv) {
+int main() {
+    cube c();
 
    return 0;
 }
