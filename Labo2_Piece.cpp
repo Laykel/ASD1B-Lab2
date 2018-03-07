@@ -38,7 +38,7 @@ ostream& operator<< (ostream& os, const Piece& p){
         for(int x = 0; x < DIM; x++){
             cout << "[";
             for(int z = 0; z < DIM; z++){
-               cout << p.c[z][x][y];
+               cout << p.c[x][y][z];
                if(z < DIM - 1)
                    cout << ", ";
             }
