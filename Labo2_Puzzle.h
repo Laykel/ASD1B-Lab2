@@ -12,7 +12,7 @@ public:
    bool isValid() const;
 private:
     Cube c;
-    currentCubes cc;
+    cubeVector cc;
 };
 
 #endif /* PUZZLE_H */

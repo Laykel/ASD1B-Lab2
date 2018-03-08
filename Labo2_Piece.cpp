@@ -22,6 +22,7 @@ Cube Piece::shift(bool& sucess, short dx, short dy, short dz) const{
     sucess = (ctr == blockCount);
     return toReturn;
 }
+
 Piece Piece::rotate(){
     Cube rc = EMPTY_CUBE;
     for(int x = 0; x < length; x++)

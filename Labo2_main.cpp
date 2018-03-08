@@ -9,17 +9,7 @@
 using namespace std;
 
 int main() {
-    Piece p(L1);    
-    cout << "Piece 1, Rot 0 :\n" << p;
-    
-    p = p.rotate();
-    cout << "Piece 1, Rot 2 :\n" << p;
-    
-    p = p.rotate();
-    cout << "Piece 1, Rot 3 :\n" << p;
-    
-    p = p.rotate();
-    cout << "Piece 1, Rot 4(0) :\n" << p;
+        cout << (S1 == S4) << endl;
     
    return 0;
 }

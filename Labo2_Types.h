@@ -7,7 +7,7 @@
 using Line = std::valarray<int>;
 using Square = std::valarray<Line>;
 using Cube = std::valarray<Square>;
-using currentCubes = std::vector<Cube>;
+using cubeVector = std::vector<Cube>;
 
 const int length = 3;
 // full, all 1 3x3x3 Cube
@@ -15,25 +15,20 @@ const Cube FILLED_CUBE = Cube(Square(Line(1,length),length),length);
 // default, all 0 3x3x3 Cube
 const Cube EMPTY_CUBE = Cube(Square(Line(0,length),length),length);
 
+
 // inlined function because of lack of cpp file.
-inline std::ostream& operator<< (std::ostream& os, const Cube& c){
-    std::cout << "     top       mid      bottom\n";
-    for(int y = 0; y < length; y++){
-        for(int x = 0; x < length; x++){
-            std::cout << "[";
-            for(int z = 0; z < length; z++){
-               std::cout << c[x][y][z];
-               if(z < length - 1)
-                   std::cout << ", ";
-            }
-            std::cout << "] ";
-        }
-        std::cout << std::endl;
-    }
-        std::cout << std::endl;
-    
-    return os;
-}
+std::ostream& operator<< (std::ostream& os, const Cube& c);
+
+// allows to generate all 6 spacial rotations of a cube
+cubeVector allSpaceRotations(const Cube& c);
+
+// allows to generate all 4 facial rotations of a cube
+cubeVector allFaceRotations(const Cube& c);
+
+cubeVector allDuplicates(const Cube& c);
+
+bool operator== (const Cube& c1, const Cube& c2);
+
 
 #endif /* TYPES_H */
 
