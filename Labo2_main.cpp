@@ -9,7 +9,7 @@
 using namespace std;
 
 int main() {
-        cout << (S1 == S4) << endl;
+    
     
    return 0;
 }
