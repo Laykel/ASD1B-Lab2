@@ -25,10 +25,12 @@ cubeVector allSpaceRotations(const Cube& c);
 // allows to generate all 4 facial rotations of a cube
 cubeVector allFaceRotations(const Cube& c);
 
-cubeVector allDuplicates(const Cube& c);
+cubeVector allRotations(const Cube& c);
 
 bool operator== (const Cube& c1, const Cube& c2);
+bool areSimilar(const Cube& c1, const Cube& c2);
 
+Cube shift(const Cube& c, bool& sucess, int dx, int dy, int dz);
 
 #endif /* TYPES_H */
 

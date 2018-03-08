@@ -52,8 +52,8 @@ cubeVector allFaceRotations(const Cube& c){
     return cv;
     
 }
-// generates a cubeVector containing all existing spacial duplicates of a given cube
-cubeVector allDuplicates(const Cube& c){
+// generates a cubeVector containing all existing spacial rotations of a given cube
+cubeVector allRotations(const Cube& c){
     cubeVector cv;
     for(Cube c1 : allFaceRotations(c))
         for (Cube c2 : allSpaceRotations(c1))
@@ -61,17 +61,36 @@ cubeVector allDuplicates(const Cube& c){
     return cv;
 }
 
+Cube shift(const Cube& c, bool& sucess, int dx, int dy, int dz){
+    Cube shifted = EMPTY_CUBE;
+    unsigned cubeSize = 0, shiftedSize = 0;
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++){
+                cubeSize += c[x][y][z];
+                if(x + dx >= 0 && x + dx < length &&
+                   y + dy >= 0 && y + dy < length &&
+                   z + dz >= 0 && z + dz < length){
+                        shifted[x + dx][y + dy][z + dz] = c[x][y][z];
+                        shiftedSize += c[x][y][z];
+                   }
+            }
+    sucess = (cubeSize == shiftedSize);
+    return shifted;
+}
+
 bool operator== (const Cube& c1, const Cube& c2){
-    // we check if c1 is a spacial duplication of c2
-    for(Cube dc : allDuplicates(c2)){
-        // we assume it's a duplicate, and we try to disprove it
-        bool duplicate = true;
-        for(int x = 0; x < length; x++)
-            for(int y = 0; y < length; y++)
-                for(int z = 0; z < length; z++)
-                    duplicate &= c1[x][y][z] == dc[x][y][z];
-         if(duplicate)
-             return true;
-    }
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++)
+                if (c1[x][y][z] != c2[x][y][z])
+                    return false;
+    return true;
+}
+
+bool areSimilar(const Cube& c1, const Cube& c2){
+    for(Cube& dup : allRotations(c2))
+        if (c1 == dup)
+            return true;
     return false;
 }

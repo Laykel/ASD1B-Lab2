@@ -5,7 +5,7 @@ Puzzle::Puzzle(const Cube& c) {
 }
 
 
-bool Puzzle::isFilled() const{
+bool Puzzle::isFilled() const {
     for(Square s : c)
         for(Line l : s)
             for (int s : l)
@@ -14,26 +14,17 @@ bool Puzzle::isFilled() const{
     return true;
 }
 
-bool Puzzle::addCube(const Cube& c){
+bool Puzzle::addCube(const Cube& c) {
     this->c += c;
     cc.push_back(c);
     return isValid();
 }
 
-bool Puzzle::addPiece(const Piece& p, short dx, short dy, short dz){
-    bool validShift;
-    c = p.shift(validShift, dx, dy, dz);
-    if(validShift)
-        addCube(c);
-    return validShift && isValid();
-}
-
-bool Puzzle::isValid() const{
+bool Puzzle::isValid() const {
     for(Square s : c)
         for(Line l : s)
             for (int s : l)
                 if (s > 1)
                     return false;
     return true;
-    
 }

@@ -1,6 +1,6 @@
 #ifndef PIECES_H
 #define PIECES_H
-#include "Labo2_Piece.h"
+#include "Labo2_Types.h"
 
 // defines pour reduire la taille du header, Empty Line & Empty Square
 #define EL {0,0,0}
@@ -17,7 +17,6 @@
               {0,0,1}},
               ES,
               ES});
-
               
     Cube C ({{{1,1,0},
               {1,0,0},
@@ -43,7 +42,7 @@
               ES,
               ES});
               
-    Cube Test({{ {1,2,3},
+    Cube Test({{{1,2,3},
               {4,5,6},
               {7,8,9}},
              {{11,12,13},
