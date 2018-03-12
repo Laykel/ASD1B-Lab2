@@ -7,12 +7,18 @@
 #include "Labo2_Pieces.h"
 
 using namespace std;
+using puzzleVector = vector<Puzzle>;
+
 
 int main() {
     time_t start = time(NULL);
-    int ctr = 0;
-    // generate cubeVectors, and reserve their size (had crashes on my machine if i didn't reserve space before pushing contents)
-    cubeVector allL,
+    int bruteforce_progress_ctr = 1, unique_progress_ctr = 0, solution_ctr = 0;
+    Puzzle p;
+    puzzleVector solutions, uniqueSolutions;
+    solutions.reserve(500000);
+    uniqueSolutions.reserve(1000);
+    // generate FastCubeVectors, and reserve their size (had crashes on my machine if i didn't reserve space before pushing contents)
+    fastCubeVector allL,
                allS,
                allC,
                allT;
@@ -24,81 +30,132 @@ int main() {
                
     // add the rotations
     for(Cube& l : allRotations(L1))
-        allL.push_back(l);
+        allL.push_back(CubeToFastCube(l));
     for(Cube& l : allRotations(L2))
-        allL.push_back(l);
+        allL.push_back(CubeToFastCube(l));
     for(Cube& s : allRotations(S1))
-        allS.push_back(s);
+        allS.push_back(CubeToFastCube(s));
     for(Cube& s : allRotations(S2))
-        allS.push_back(s);
-    for(Cube& c : allRotations(C))
-        allC.push_back(c);
+        allS.push_back(CubeToFastCube(s));
     for(Cube& t : allRotations(T))
-        allT.push_back(t);
+        allT.push_back(CubeToFastCube(t));
+    // for the c cube, we don't want any rotations, as to remove any rotational duplicates
+    allC.push_back(CubeToFastCube(C));
     
     // generate each known translation and add it if not present
     bool valid;
     Cube tmp;
-    for(Cube& l : allL)
+    for(FastCube l : allL)
         for(int x = -length; x < length; x++)
             for(int y = -length; y < length; y++)
                 for(int z = -length; z < length; z++){
-                    tmp = shift(l, valid, x, y, z);
+                    tmp = shift(FastCubeToCube(l), valid, x, y, z);
                     // if it's a valid shift, and is not present in the vector, we add it
-                    if(valid && none_of(allL.begin(), allL.end(),[&](const Cube& c){return c == tmp;})){
-                        allL.push_back(tmp);
+                    if(valid && find(allL.begin(), allL.end(), CubeToFastCube(tmp)) == allL.end()){
+                        allL.push_back(CubeToFastCube(tmp));
                     }
                 }
                 
-    for(Cube& s : allS)
+    for(FastCube s : allS)
         for(int x = -length; x < length; x++)
             for(int y = -length; y < length; y++)
                 for(int z = -length; z < length; z++){
-                    Cube tmp = shift(s, valid, x, y, z);
+                    tmp = shift(FastCubeToCube(s), valid, x, y, z);
                     // if it's a valid shift, and is not present in the vector, we add it
-                    // dirty hack, but find didn't seem to work
-                    if(valid && none_of(allS.begin(), allS.end(),[&](const Cube& c){return c == tmp;})){
-                        allS.push_back(tmp);
+                    if(valid && find(allS.begin(), allS.end(), CubeToFastCube(tmp)) == allS.end()){
+                        allS.push_back(CubeToFastCube(tmp));
                     }
                 }
                 
-    for(Cube& c : allC)
+    for(FastCube t : allT)
         for(int x = -length; x < length; x++)
             for(int y = -length; y < length; y++)
                 for(int z = -length; z < length; z++){
-                    Cube tmp = shift(c, valid, x, y, z);
+                    tmp = shift(FastCubeToCube(t), valid, x, y, z);
                     // if it's a valid shift, and is not present in the vector, we add it
-                    // dirty hack, but find didn't seem to work
-                    if(valid && none_of(allC.begin(), allC.end(),[&](const Cube& c1){return c1 == tmp;})){
-                        allC.push_back(tmp);
+                    if(valid && find(allT.begin(), allT.end(), CubeToFastCube(tmp)) == allT.end()){
+                        allT.push_back(CubeToFastCube(tmp));
                     }
                 }
-                
-    for(Cube& t : allT)
+    
+    // since we don't want any rotations for C, we only add shifts that are not rotations of present elements.
+    for(FastCube c : allC)
         for(int x = -length; x < length; x++)
             for(int y = -length; y < length; y++)
                 for(int z = -length; z < length; z++){
-                    Cube tmp = shift(t, valid, x, y, z);
+                    tmp = shift(FastCubeToCube(c), valid, x, y, z);
                     // if it's a valid shift, and is not present in the vector, we add it
-                    // dirty hack, but find didn't seem to work
-                    if(valid && none_of(allT.begin(), allT.end(),[&](const Cube& c){return c == tmp;})){
-                        allT.push_back(tmp);
+                    if(valid && none_of(allC.begin(), allC.end(), [&](FastCube fc){return areSimilar(CubeToFastCube(tmp), fc);})){
+                        allC.push_back(CubeToFastCube(tmp));
                     }
                 }
                     
-            
     cout << "All shapes generated" << endl;
-// lol, don't even try to run this shit bellow, needs to have some stuff done before
- /*    for(Cube& l1 : allL) 
-        for(Cube& l2 : allL)
-            for(Cube& l3 : allL)
-                for(Cube& l4 : allL)
-                    for(Cube& s : allS)
-                        for (Cube& c : allC)
-                            for(Cube& t : allT)
-                                ctr++; */
-    cout << ctr << endl << (time(NULL) - start);
-                            
+    cout << "diferent 'L' shape locations and orientations : " << allL.size() << endl
+         << "diferent 'S' shape locations and orientations : " << allS.size() << endl
+         << "diferent 'C' shape locations and orientations : " << allC.size() << endl
+         << "diferent 'T' shape locations and orientations : " << allT.size() << endl;
+
     
+    for (FastCube c : allC){
+        if(p.addFastCube(c, Shape::C)){
+            for(FastCube s : allS){
+                if(p.addFastCube(s, Shape::S)){
+                    for(FastCube t : allT){
+                        if(p.addFastCube(t, Shape::T)){
+                            for(FastCube l1 : allL){
+                                if(p.addFastCube(l1, Shape::L)){
+                                    for(FastCube l2 : allL){
+                                        if(p.addFastCube(l2, Shape::L)){
+                                            for(FastCube l3 : allL){
+                                                if(p.addFastCube(l3, Shape::L)){       
+                                                    for(FastCube l4 : allL){
+                                                        p.addFastCube(l4, Shape::L);
+                                                        if(p.isFilled()){
+                                                            // stuff to do with solution
+                                                            solution_ctr++;
+                                                            solutions.push_back(Puzzle(p));
+                                                            p.removeLastCube();
+                                                        }
+                                                    }
+                                                p.removeLastCube();
+                                                }
+                                            }
+                                        p.removeLastCube();
+                                        }
+                                    }
+                                p.removeLastCube();
+                                }
+                            }
+                        p.removeLastCube();
+                        }
+                    }
+                p.removeLastCube();
+                }
+            }
+        p.removeLastCube();
+                cout << '\r' << "solution bruteforce progress : " 
+                     << bruteforce_progress_ctr++ << "/" << allC.size()
+                     << " (" << bruteforce_progress_ctr/(float)allC.size()*100.f
+                     << "%), " << solution_ctr << " solutions already found.     " 
+                     << flush;
+        }
+    }
+    cout << endl << "copying unique solutions, could take a while : " << endl;
+    for(Puzzle& p1 : solutions){
+            unique_progress_ctr++;
+        if(find(uniqueSolutions.begin(), uniqueSolutions.end(), p1) == uniqueSolutions.end()){
+            uniqueSolutions.push_back(p1);
+            cout << '\r' << uniqueSolutions.size() << " unique solutions found. "
+                 << " (Progress : " << unique_progress_ctr << "/" << solutions.size()  
+                 << ")" << flush;
+        }
+    }
+    
+    cout << endl << solution_ctr << " solutions, " << uniqueSolutions.size() 
+         << " unique solutions, found in " << (time(NULL) - start) << " seconds";
+    
+    int i;
+    cin >> i;
    return 0;
 }

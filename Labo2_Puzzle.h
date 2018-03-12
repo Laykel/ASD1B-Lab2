@@ -5,12 +5,22 @@
 class Puzzle {
 public:
    Puzzle(const Cube& c = EMPTY_CUBE);
-   bool addCube(const Cube& c);
+   Puzzle(FastCube fc);
+   Puzzle(const Puzzle& p);
+   
+   // deprecated, prefer adding fast cubes for speed purposes
+   bool addCube(const Cube& c, Shape s);
+   bool addFastCube(FastCube fc, Shape s);
+   void removeLastCube();
    bool isFilled() const;
    bool isValid() const;
+   Cube getCodedCube(bool ShapeEncoding) const;
+   friend bool operator== (const Puzzle& p1, const Puzzle& p2);
+   
 private:
-    Cube c;
-    cubeVector cc;
+    FastCube fc;
+    fastCubeVector fcv;
+    shapeVector sv;
 };
 
 #endif /* PUZZLE_H */
