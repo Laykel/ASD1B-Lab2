@@ -12,7 +12,7 @@ using cubeVector = std::vector<Cube>;
 using FastCube = uint_fast32_t;
 using fastCubeVector = std::vector<FastCube>;
 
-enum class Shape{L = 1, C, T, S};
+enum class Shape{L, C, T, S};
 using shapeVector = std::vector<Shape>;
 
 const int length = 3;
@@ -44,6 +44,7 @@ fastCubeVector allRotations(FastCube fc);
 
 // compares direct equality
 bool operator== (const Cube& c1, const Cube& c2);
+std::string toString(const Cube& c);
 // compares spacial equality
 bool areSimilar(const Cube& c1, const Cube& c2);
 bool areSimilar(FastCube fc1, FastCube fc2);

@@ -135,6 +135,15 @@ bool operator== (const Cube& c1, const Cube& c2){
     return true;
 }
 
+string toString(const Cube& c){
+    string str;
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++)
+                str += to_string(c[x][y][z]);
+    return str;
+}
+
 bool areSimilar(const Cube& c1, const Cube& c2){
     for(Cube& fr : allFaceRotations(c1))
             if (c2 == fr)

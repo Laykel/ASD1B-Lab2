@@ -20,6 +20,8 @@ public:
 private:
     FastCube fc;
     fastCubeVector fcv;
+    fastCubeVector sortedfcv;
+    bool sorted = false;
     shapeVector sv;
 };
 

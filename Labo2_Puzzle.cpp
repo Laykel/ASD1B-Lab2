@@ -11,6 +11,9 @@ Puzzle::Puzzle(const Puzzle& p) {
     fc = p.fc;
     fcv = fastCubeVector(p.fcv);
     sv = shapeVector(p.sv);
+    sortedfcv = fastCubeVector(p.fcv);
+    sorted = true;
+    sort(sortedfcv.begin(), sortedfcv.end());
 }
 
 
@@ -52,9 +55,11 @@ Cube Puzzle::getCodedCube(bool ShapeEncoding) const{
 
 // two puzzles are the same if they have "similar" solutions
 bool operator== (const Puzzle& p1, const Puzzle& p2) {
-    return areSimilar(p1.getCodedCube(true), p2.getCodedCube(true));
-    for(int i = 0; i < p1.fcv.size() && i < p2.fcv.size(); i++){
-        if(p1.fcv.at(i) != p2.fcv.at(i) || p1.sv.at(i) != p2.sv.at(i))
+    
+    //return areSimilar(p1.getCodedCube(true), p2.getCodedCube(true));
+        
+    for(int i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++){
+        if(p1.sortedfcv.at(i) != p2.sortedfcv.at(i))
             return false;
     }
     return true;

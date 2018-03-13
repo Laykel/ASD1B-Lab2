@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <iostream>
+#include <fstream>
 #include <algorithm>
 #include <ctime>
 #include "Labo2_Types.h"
@@ -10,6 +11,12 @@ using namespace std;
 using puzzleVector = vector<Puzzle>;
 using fastCubeVectorVector = std::vector<fastCubeVector>;
 
+void appendStringToFile(const string& str, const string& filename){
+    ofstream ofs(filename, ofstream::app);
+    ofs << str;
+    ofs.close();
+}
+
 void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
                          shapeVector& sv, Puzzle& p, size_t index, 
                          bool verbose = false){
@@ -17,7 +24,9 @@ void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
     // trivial error
     if (index >= sv.size() || index >= pieces.size())
         return;
-    
+    // other trivial error
+    if(pieces.empty() || sv.empty())
+        return;
     unsigned progress = 0;
     
     for(FastCube fc : pieces.at(index)){
@@ -32,7 +41,7 @@ void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
         
         if(verbose){
             cout << '\r' << "solution bruteforce progress : " 
-                 << progress++ << "/" << pieces.at(index).size() << " (" 
+                 << ++progress << "/" << pieces.at(index).size() << " (" 
                  << progress/(float)pieces.at(index).size()*100.f << "%), " 
                  << solutions.size() << " solutions already found.       " << flush;
         }
@@ -40,6 +49,25 @@ void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
     
 }
 
+void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
+                         bool verbose = false, bool saveSolutions = false){
+    
+    unsigned ctr = 0;
+    for(Puzzle& p : solutions){
+            ctr++;
+        if(find(uniqueSolutions.begin(), uniqueSolutions.end(), p) == uniqueSolutions.end()){
+            uniqueSolutions.push_back(p);
+            if(saveSolutions){
+                string tmp = toString(p.getCodedCube(false)) + " : " + toString(p.getCodedCube(true)) + '\n';
+                appendStringToFile(tmp, "solutions.txt");
+            }
+            if(verbose && ctr % 5 == 0)
+                cout << '\r' << uniqueSolutions.size() << " unique solutions found."
+                     << " (Progress : " << ctr << "/" << solutions.size() << ")" 
+                     << flush;
+        }
+    }
+}
 
 void generateValidShifts(fastCubeVector& fcv){
     Cube tmp;
@@ -73,7 +101,6 @@ void generateUniqueShifts(fastCubeVector& fcv){
 
 int main() {
     time_t start = time(NULL);
-    int bruteforce_progress_ctr = 1, unique_progress_ctr = 0, solution_ctr = 0;
     Puzzle p;
     puzzleVector solutions, uniqueSolutions;
     solutions.reserve(500000);
@@ -118,22 +145,17 @@ int main() {
 
     fastCubeVectorVector fcvv{allC, allS, allT, allL, allL, allL, allL};
     shapeVector sv{Shape::C, Shape::S, Shape::T, Shape::L, Shape::L, Shape::L, Shape::L};
+    // all shapes are generated
     bruteforceSolutions(solutions, fcvv,  sv, p, 0, true);
-
+    cout << endl << solutions.size() << " solutions found in " << (time(NULL) - start) << " seconds";
     
+    
+    start = time(NULL);
     cout << endl << "copying unique solutions, could take a while : " << endl;
-    for(Puzzle& p1 : solutions){
-            unique_progress_ctr++;
-        if(find(uniqueSolutions.begin(), uniqueSolutions.end(), p1) == uniqueSolutions.end()){
-            uniqueSolutions.push_back(p1);
-            cout << '\r' << uniqueSolutions.size() << " unique solutions found. "
-                 << " (Progress : " << unique_progress_ctr << "/" << solutions.size()  
-                 << ")" << flush;
-        }
-    }
+    copyUniqueSolutions(solutions, uniqueSolutions, true);
     
-    cout << endl << solution_ctr << " solutions, " << uniqueSolutions.size() 
-         << " unique solutions, found in " << (time(NULL) - start) << " seconds";
+    cout << endl << uniqueSolutions.size() << " unique solutions, found in " 
+         << (time(NULL) - start) << " seconds";
     
     int i;
     cin >> i;
