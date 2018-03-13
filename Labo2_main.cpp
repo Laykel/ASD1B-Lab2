@@ -8,7 +8,68 @@
 
 using namespace std;
 using puzzleVector = vector<Puzzle>;
+using fastCubeVectorVector = std::vector<fastCubeVector>;
 
+void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
+                         shapeVector& sv, Puzzle& p, size_t index, 
+                         bool verbose = false){
+    
+    // trivial error
+    if (index >= sv.size() || index >= pieces.size())
+        return;
+    
+    unsigned progress = 0;
+    
+    for(FastCube fc : pieces.at(index)){
+        if(p.addFastCube(fc, sv.at(index))){
+            if(p.isFilled()){
+                // stuff to do with solutions
+                solutions.push_back(Puzzle(p));
+            }
+            bruteforceSolutions(solutions, pieces, sv, p, index+1);
+            p.removeLastCube();
+        }
+        
+        if(verbose){
+            cout << '\r' << "solution bruteforce progress : " 
+                 << progress++ << "/" << pieces.at(index).size() << " (" 
+                 << progress/(float)pieces.at(index).size()*100.f << "%), " 
+                 << solutions.size() << " solutions already found.       " << flush;
+        }
+    }
+    
+}
+
+
+void generateValidShifts(fastCubeVector& fcv){
+    Cube tmp;
+    bool valid = false;
+    for(FastCube l : fcv)
+        for(int x = -length; x < length; x++)
+            for(int y = -length; y < length; y++)
+                for(int z = -length; z < length; z++){
+                    tmp = shift(FastCubeToCube(l), valid, x, y, z);
+                    // if it's a valid shift, and is not present in the vector, we add it
+                    if(valid && find(fcv.begin(), fcv.end(), CubeToFastCube(tmp)) == fcv.end()){
+                        fcv.push_back(CubeToFastCube(tmp));
+                    }
+                }
+}
+
+void generateUniqueShifts(fastCubeVector& fcv){
+    Cube tmp;
+    bool valid = false;
+    for(FastCube c : fcv)
+        for(int x = -length; x < length; x++)
+            for(int y = -length; y < length; y++)
+                for(int z = -length; z < length; z++){
+                    tmp = shift(FastCubeToCube(c), valid, x, y, z);
+                    // if it's a valid shift, and is not present in the vector, we add it
+                    if(valid && none_of(fcv.begin(), fcv.end(), [&](FastCube fc){return areSimilar(CubeToFastCube(tmp), fc);})){
+                        fcv.push_back(CubeToFastCube(tmp));
+                    }
+                }
+}
 
 int main() {
     time_t start = time(NULL);
@@ -23,10 +84,10 @@ int main() {
                allC,
                allT;
                
-    allL.reserve(300);
-    allS.reserve(300);
-    allC.reserve(300);
-    allT.reserve(300);
+    allL.reserve(150);
+    allS.reserve(150);
+    allC.reserve(150);
+    allT.reserve(150);
                
     // add the rotations
     for(Cube& l : allRotations(L1))
@@ -43,104 +104,23 @@ int main() {
     allC.push_back(CubeToFastCube(C));
     
     // generate each known translation and add it if not present
-    bool valid;
-    Cube tmp;
-    for(FastCube l : allL)
-        for(int x = -length; x < length; x++)
-            for(int y = -length; y < length; y++)
-                for(int z = -length; z < length; z++){
-                    tmp = shift(FastCubeToCube(l), valid, x, y, z);
-                    // if it's a valid shift, and is not present in the vector, we add it
-                    if(valid && find(allL.begin(), allL.end(), CubeToFastCube(tmp)) == allL.end()){
-                        allL.push_back(CubeToFastCube(tmp));
-                    }
-                }
-                
-    for(FastCube s : allS)
-        for(int x = -length; x < length; x++)
-            for(int y = -length; y < length; y++)
-                for(int z = -length; z < length; z++){
-                    tmp = shift(FastCubeToCube(s), valid, x, y, z);
-                    // if it's a valid shift, and is not present in the vector, we add it
-                    if(valid && find(allS.begin(), allS.end(), CubeToFastCube(tmp)) == allS.end()){
-                        allS.push_back(CubeToFastCube(tmp));
-                    }
-                }
-                
-    for(FastCube t : allT)
-        for(int x = -length; x < length; x++)
-            for(int y = -length; y < length; y++)
-                for(int z = -length; z < length; z++){
-                    tmp = shift(FastCubeToCube(t), valid, x, y, z);
-                    // if it's a valid shift, and is not present in the vector, we add it
-                    if(valid && find(allT.begin(), allT.end(), CubeToFastCube(tmp)) == allT.end()){
-                        allT.push_back(CubeToFastCube(tmp));
-                    }
-                }
+    generateValidShifts(allL);
+    generateValidShifts(allS);
+    generateValidShifts(allT);
+    generateUniqueShifts(allC);
     
-    // since we don't want any rotations for C, we only add shifts that are not rotations of present elements.
-    for(FastCube c : allC)
-        for(int x = -length; x < length; x++)
-            for(int y = -length; y < length; y++)
-                for(int z = -length; z < length; z++){
-                    tmp = shift(FastCubeToCube(c), valid, x, y, z);
-                    // if it's a valid shift, and is not present in the vector, we add it
-                    if(valid && none_of(allC.begin(), allC.end(), [&](FastCube fc){return areSimilar(CubeToFastCube(tmp), fc);})){
-                        allC.push_back(CubeToFastCube(tmp));
-                    }
-                }
                     
     cout << "All shapes generated" << endl;
     cout << "diferent 'L' shape locations and orientations : " << allL.size() << endl
          << "diferent 'S' shape locations and orientations : " << allS.size() << endl
-         << "diferent 'C' shape locations and orientations : " << allC.size() << endl
-         << "diferent 'T' shape locations and orientations : " << allT.size() << endl;
+         << "diferent 'T' shape locations and orientations : " << allT.size() << endl
+         << "diferent 'C' shape locations and orientations : " << allC.size() << endl;
+
+    fastCubeVectorVector fcvv{allC, allS, allT, allL, allL, allL, allL};
+    shapeVector sv{Shape::C, Shape::S, Shape::T, Shape::L, Shape::L, Shape::L, Shape::L};
+    bruteforceSolutions(solutions, fcvv,  sv, p, 0, true);
 
     
-    for (FastCube c : allC){
-        if(p.addFastCube(c, Shape::C)){
-            for(FastCube s : allS){
-                if(p.addFastCube(s, Shape::S)){
-                    for(FastCube t : allT){
-                        if(p.addFastCube(t, Shape::T)){
-                            for(FastCube l1 : allL){
-                                if(p.addFastCube(l1, Shape::L)){
-                                    for(FastCube l2 : allL){
-                                        if(p.addFastCube(l2, Shape::L)){
-                                            for(FastCube l3 : allL){
-                                                if(p.addFastCube(l3, Shape::L)){       
-                                                    for(FastCube l4 : allL){
-                                                        p.addFastCube(l4, Shape::L);
-                                                        if(p.isFilled()){
-                                                            // stuff to do with solution
-                                                            solution_ctr++;
-                                                            solutions.push_back(Puzzle(p));
-                                                            p.removeLastCube();
-                                                        }
-                                                    }
-                                                p.removeLastCube();
-                                                }
-                                            }
-                                        p.removeLastCube();
-                                        }
-                                    }
-                                p.removeLastCube();
-                                }
-                            }
-                        p.removeLastCube();
-                        }
-                    }
-                p.removeLastCube();
-                }
-            }
-        p.removeLastCube();
-                cout << '\r' << "solution bruteforce progress : " 
-                     << bruteforce_progress_ctr++ << "/" << allC.size()
-                     << " (" << bruteforce_progress_ctr/(float)allC.size()*100.f
-                     << "%), " << solution_ctr << " solutions already found.     " 
-                     << flush;
-        }
-    }
     cout << endl << "copying unique solutions, could take a while : " << endl;
     for(Puzzle& p1 : solutions){
             unique_progress_ctr++;
