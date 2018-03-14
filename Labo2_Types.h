@@ -38,6 +38,7 @@ fastCubeVector allSpaceRotations(FastCube c);
 cubeVector allFaceRotations(const Cube& c);
 fastCubeVector allFaceRotations(FastCube fc);
 
+
 // allows to generate all 24 rotations in space of a given cube / fastCube
 cubeVector allRotations(const Cube& c);
 fastCubeVector allRotations(FastCube fc);

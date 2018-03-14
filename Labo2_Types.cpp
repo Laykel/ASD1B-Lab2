@@ -89,7 +89,6 @@ fastCubeVector allFaceRotations(FastCube fc){
     return fcv;
 }
 
-
 // generates a cubeVector containing all existing spacial rotations of a given cube
 cubeVector allRotations(const Cube& c){
     cubeVector cv;

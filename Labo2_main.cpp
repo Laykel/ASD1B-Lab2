@@ -98,7 +98,7 @@ void generateUniqueShifts(fastCubeVector& fcv){
                 }
 }
 
-int main() {    
+int main() {
     time_t start = time(NULL);
     Puzzle p;
     puzzleVector solutions, uniqueSolutions;
