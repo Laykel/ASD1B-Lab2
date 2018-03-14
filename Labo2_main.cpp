@@ -20,7 +20,6 @@ void appendStringToFile(const string& str, const string& filename){
 void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
                          shapeVector& sv, Puzzle& p, size_t index, 
                          bool verbose = false){
-    
     // trivial error
     if (index >= sv.size() || index >= pieces.size())
         return;
@@ -38,11 +37,11 @@ void bruteforceSolutions(puzzleVector& solutions, fastCubeVectorVector& pieces,
             bruteforceSolutions(solutions, pieces, sv, p, index+1);
             p.removeLastCube();
         }
-        
+        ++progress;
         if(verbose){
             cout << '\r' << "solution bruteforce progress : " 
-                 << ++progress << "/" << pieces.at(index).size() << " (" 
-                 << progress/(float)pieces.at(index).size()*100.f << "%), " 
+                 << progress << "/" << pieces.at(index).size() << " (" 
+                 << (float)progress/(float)pieces.at(index).size()*100.f << "%), " 
                  << solutions.size() << " solutions already found.       " << flush;
         }
     }
@@ -99,12 +98,13 @@ void generateUniqueShifts(fastCubeVector& fcv){
                 }
 }
 
-int main() {
+int main() {    
     time_t start = time(NULL);
     Puzzle p;
     puzzleVector solutions, uniqueSolutions;
     solutions.reserve(500000);
     uniqueSolutions.reserve(1000);
+    
     // generate FastCubeVectors, and reserve their size (had crashes on my machine if i didn't reserve space before pushing contents)
     fastCubeVector allL,
                allS,
@@ -128,7 +128,8 @@ int main() {
     for(Cube& t : allRotations(T))
         allT.push_back(CubeToFastCube(t));
     // for the c cube, we don't want any rotations, as to remove any rotational duplicates
-    allC.push_back(CubeToFastCube(C));
+    //for(Cube& c : allRotations(C))
+        allC.push_back(CubeToFastCube(C));
     
     // generate each known translation and add it if not present
     generateValidShifts(allL);
@@ -144,8 +145,11 @@ int main() {
          << "diferent 'C' shape locations and orientations : " << allC.size() << endl;
 
     fastCubeVectorVector fcvv{allC, allS, allT, allL, allL, allL, allL};
+    
+    
     shapeVector sv{Shape::C, Shape::S, Shape::T, Shape::L, Shape::L, Shape::L, Shape::L};
     // all shapes are generated
+    
     bruteforceSolutions(solutions, fcvv,  sv, p, 0, true);
     cout << endl << solutions.size() << " solutions found in " << (time(NULL) - start) << " seconds";
     

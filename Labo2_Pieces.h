@@ -42,6 +42,13 @@
               {1,0,0}},
               ES,
               ES});
+  
+  FastCube FCL1 = CubeToFastCube(L1), 
+           FCL2 = CubeToFastCube(L2),
+           FCS1 = CubeToFastCube(S1),
+           FCS2 = CubeToFastCube(S2),
+           FCC = CubeToFastCube(C),
+           FCT = CubeToFastCube(T);
               
     Cube Test({{{1,2,3},
               {4,5,6},

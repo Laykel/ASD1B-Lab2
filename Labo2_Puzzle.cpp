@@ -58,7 +58,7 @@ bool operator== (const Puzzle& p1, const Puzzle& p2) {
     
     //return areSimilar(p1.getCodedCube(true), p2.getCodedCube(true));
         
-    for(int i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++){
+    for(size_t i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++){
         if(p1.sortedfcv.at(i) != p2.sortedfcv.at(i))
             return false;
     }
