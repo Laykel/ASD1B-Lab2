@@ -3,6 +3,7 @@
 #include <valarray>
 #include <vector>
 #include <iostream>
+#include <string>
 
 using Line = std::valarray<int>;
 using Square = std::valarray<Line>;
@@ -11,8 +12,12 @@ using cubeVector = std::vector<Cube>;
 // why use an uint_fast32_t ? because if we want fast, let's go all the way...
 using FastCube = uint_fast32_t;
 using fastCubeVector = std::vector<FastCube>;
-
+// prime numbers to be able to sign a solution
 enum class Shape{L, C, T, S};
+
+const int SHAPE_TO_CUBES_COUNT[] = {4, 3, 4, 4};
+const int SHAPE_TO_SIGNATURE[] = {2, 3, 5, 7};
+
 using shapeVector = std::vector<Shape>;
 
 const int length = 3;
@@ -27,28 +32,25 @@ const FastCube FILLED_FAST_CUBE = (FastCube)0x7FFFFFF;
 // default, all 0 3x3x3 Fast Cube
 const FastCube EMPTY_FAST_CUBE  = (FastCube)0;
 
-// inlined function because of lack of cpp file.
+// operateurs de flux
 std::ostream& operator<< (std::ostream& os, const Cube& c);
+std::ostream& operator<< (std::ostream& os, const Shape& s);
 
 // allows to generate all 6 spacial rotations of a a given cube / fastCube
 cubeVector allSpaceRotations(const Cube& c);
-fastCubeVector allSpaceRotations(FastCube c);
 
 // allows to generate all 4 facial rotations of a a given cube / fastCube
 cubeVector allFaceRotations(const Cube& c);
-fastCubeVector allFaceRotations(FastCube fc);
 
 
 // allows to generate all 24 rotations in space of a given cube / fastCube
 cubeVector allRotations(const Cube& c);
-fastCubeVector allRotations(FastCube fc);
 
 // compares direct equality
 bool operator== (const Cube& c1, const Cube& c2);
 std::string toString(const Cube& c);
 // compares spacial equality
 bool areSimilar(const Cube& c1, const Cube& c2);
-bool areSimilar(FastCube fc1, FastCube fc2);
 
 Cube shift(const Cube& c, bool& sucess, int dx, int dy, int dz);
 

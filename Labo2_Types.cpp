@@ -20,6 +20,20 @@ ostream& operator<< (ostream& os, const Cube& c){
     return os;
 }
 
+std::ostream& operator<< (std::ostream& os, const Shape& s){
+    switch(s){
+        case Shape::L : os << "L";
+                        break;
+        case Shape::S : os << "S";
+                        break;
+        case Shape::T : os << "T";
+                        break;
+        case Shape::C : os << "C";
+    }
+    return os;
+    
+}
+
 // allows to generate all 6 spacial rotations of a cube
 cubeVector allSpaceRotations(const Cube& c){
     cubeVector cv {c, EMPTY_CUBE, EMPTY_CUBE, EMPTY_CUBE, EMPTY_CUBE, EMPTY_CUBE};
@@ -38,30 +52,6 @@ cubeVector allSpaceRotations(const Cube& c){
     return cv;
 }
 
-// allows to generate all 6 spacial rotations of a fast cube
-fastCubeVector allSpaceRotations(FastCube c){
-    fastCubeVector fcv {c, EMPTY_FAST_CUBE, EMPTY_FAST_CUBE, EMPTY_FAST_CUBE, 
-                        EMPTY_FAST_CUBE, EMPTY_FAST_CUBE};
-                        
-    for(int r = 1; r < 6;r++) 
-        for(int x = 0; x < length; x++)
-            for(int y = 0; y < length; y++)
-                for(int z = 0; z < length; z++){
-                    if(r < 4){
-                        // generate rotations bases on previous rotated cube
-                        int rhs = (fcv.at(r - 1) >> (length * length * (length - 1 - y) + length * x + z)) & 1;
-                        fcv.at(r) |= (rhs << (length * length * x + length * y + z));
-                    }
-                    else{
-                        // generate last rotations bases on rotations 0 and 2.
-                        int rhs = (fcv.at((r - 4)*2) >> (length * length * (length - 1 - y) + length * x + z)) & 1;
-                        fcv.at(r) |= (rhs << (length * length * x + length * y + z));
-                    }
-                }
-    return fcv;
-    
-}
-
 // allows to generate all 4 facial rotations of a cube
 cubeVector allFaceRotations(const Cube& c){
     cubeVector cv {c, EMPTY_CUBE, EMPTY_CUBE, EMPTY_CUBE};
@@ -75,20 +65,6 @@ cubeVector allFaceRotations(const Cube& c){
     return cv;
 }
 
-// allows to generate all 4 facial rotations of a fast cube
-fastCubeVector allFaceRotations(FastCube fc){
-    fastCubeVector fcv {fc, EMPTY_FAST_CUBE, EMPTY_FAST_CUBE, EMPTY_FAST_CUBE};
-    for(int r = 1; r < 4;r++)
-        for(int x = 0; x < length; x++)
-            for(int y = 0; y < length; y++)
-                for(int z = 0; z < length ; z++){
-                    // generate rotations bases on previous rotated cube
-                    int rhs = (fcv.at(r - 1) >> (length * length * x + length * (length - 1 - z) + y)) & 1;
-                    fcv.at(r) |= (rhs << (length * length * x + length * y + z));
-                }
-    return fcv;
-}
-
 // generates a cubeVector containing all existing spacial rotations of a given cube
 cubeVector allRotations(const Cube& c){
     cubeVector cv;
@@ -96,15 +72,6 @@ cubeVector allRotations(const Cube& c){
         for (Cube& c2 : allSpaceRotations(c1))
             cv.push_back(c2);
     return cv;
-}
-
-// generates a fastCubeVector containing all existing spacial rotations of a given fast cube
-fastCubeVector allRotations(FastCube fc){
-    fastCubeVector fcv;
-    for(FastCube fc1 : allFaceRotations(fc))
-        for (FastCube fc2 : allSpaceRotations(fc1))
-            fcv.push_back(fc2);
-    return fcv;
 }
 
 Cube shift(const Cube& c, bool& sucess, int dx, int dy, int dz){
@@ -149,15 +116,6 @@ bool areSimilar(const Cube& c1, const Cube& c2){
                 return true;
     return false;
 }
-
-bool areSimilar(FastCube fc1, FastCube fc2){
-    for(FastCube fr : allFaceRotations(fc1))
-            if (fc2 == fr)
-                return true;
-       
-    return false;
-}
-
 FastCube CubeToFastCube(const Cube& c){
     FastCube fc = 0;
     int ctr = 0;
