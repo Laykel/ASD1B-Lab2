@@ -21,15 +21,7 @@ ostream& operator<< (ostream& os, const Cube& c){
 }
 
 std::ostream& operator<< (std::ostream& os, const Shape& s){
-    switch(s){
-        case Shape::L : os << "L";
-                        break;
-        case Shape::S : os << "S";
-                        break;
-        case Shape::T : os << "T";
-                        break;
-        case Shape::C : os << "C";
-    }
+    os << SHAPE_TO_STRING[(int)s];
     return os;
     
 }

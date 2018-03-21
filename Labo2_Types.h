@@ -17,6 +17,7 @@ enum class Shape{L, C, T, S};
 
 const int SHAPE_TO_CUBES_COUNT[] = {4, 3, 4, 4};
 const int SHAPE_TO_SIGNATURE[] = {2, 3, 5, 7};
+const std::string SHAPE_TO_STRING[] = {"L", "C", "T", "S"};
 
 using shapeVector = std::vector<Shape>;
 

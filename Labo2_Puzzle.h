@@ -14,14 +14,12 @@ public:
    void removeLastCube();
    bool isFilled() const;
    bool isValid() const;
-   Cube getCodedCube(bool ShapeEncoding) const;
+   Cube getCodedCube(bool ShapeEncoding = false) const;
    friend bool operator== (const Puzzle& p1, const Puzzle& p2);
    
 private:
     FastCube fc;
     fastCubeVector fcv;
-    fastCubeVector sortedfcv;
-    bool sorted = false;
     shapeVector sv;
 };
 
