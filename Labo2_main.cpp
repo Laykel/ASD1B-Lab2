@@ -177,7 +177,8 @@ void findSolutions(puzzleVector& solutions, const fastCubeVectorVector& uniquePi
     if(genUniqueSolutions){
         puzzleVector uniqueSolutions;
         uniqueSolutions.reserve(solutions.size() / duplicateSolutions);
-        copyUniqueSolutions(solutions, uniqueSolutions, false);
+        copyUniqueSolutions(solutions, uniqueSolutions, 
+                            verboseLevel == 1 || verboseLevel == 3);
         solutions = uniqueSolutions;
         // we divide the solution number due to the spacial rotation we can't detect
         // if we don't want the rotations
@@ -311,10 +312,10 @@ int main() {
                   // shapeVector containing the shapes of each set used
                   {Sl, Sl, Sl, Sl, Ss, St, Sc}, 
                   // the number of solutions wanted 
-                  solutionsWanted, 
-                  // do we only want unique solutions (without any piece duplication).
+                  solutionsWanted,
+                  // unique solution switch
                   true, 
-                  // do we only want all rotations
+                  // all rotation switch (messing with both switches allows to get answers to questions 2->5)
                   true, 
                   // verbose level, from 0 to 3.
                   verboseLevel);
