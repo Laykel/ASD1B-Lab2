@@ -11,6 +11,14 @@
 
 using namespace std;
 
+// two puzzles are the same if they have "similar" solutions
+bool operator== (const Puzzle& p1, const Puzzle& p2) {
+    for(size_t i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++)
+        if(p1.sortedfcv.at(i) != p2.sortedfcv.at(i)) 
+            return false;
+    return true;
+}
+
 Puzzle::Puzzle(const Cube& c) : Puzzle(CubeToFastCube(c)){}
 
 Puzzle::Puzzle(FastCube fc) : fc(fc){}
@@ -58,12 +66,4 @@ Cube Puzzle::getCodedCube(bool ShapeEncoding) const{
     }
     
     return cc;
-}
-
-// two puzzles are the same if they have "similar" solutions
-bool operator== (const Puzzle& p1, const Puzzle& p2) {
-    for(size_t i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++)
-        if(p1.sortedfcv.at(i) != p2.sortedfcv.at(i)) 
-            return false;
-    return true;
 }

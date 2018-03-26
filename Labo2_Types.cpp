@@ -9,6 +9,7 @@
 #include "Labo2_Types.h"
 
 using namespace std;
+
 ostream& operator<< (ostream& os, const Cube& c){
     cout << "     top       mid      bottom\n";
     for(int y = 0; y < length; y++){
@@ -23,7 +24,7 @@ ostream& operator<< (ostream& os, const Cube& c){
         }
         cout << endl;
     }
-        cout << endl;
+    cout << endl;
     
     return os;
 }
@@ -31,7 +32,22 @@ ostream& operator<< (ostream& os, const Cube& c){
 std::ostream& operator<< (std::ostream& os, const Shape& s){
     os << SHAPE_TO_STRING[(int)s];
     return os;
-    
+}
+
+bool operator== (const Cube& c1, const Cube& c2){
+    for(int x = 0; x < length; x++)
+        for(int y = 0; y < length; y++)
+            for(int z = 0; z < length; z++)
+                if (c1[x][y][z] != c2[x][y][z])
+                    return false;
+    return true;
+}
+
+bool areSimilar(const Cube& c1, const Cube& c2){
+    for(Cube& fr : allFaceRotations(c1))
+            if (c2 == fr)
+                return true;
+    return false;
 }
 
 // allows to generate all 6 spacial rotations of a cube
@@ -61,7 +77,6 @@ cubeVector allFaceRotations(const Cube& c){
                 for(int z = 0; z < length ; z++)
                     // generate rotations bases on previous rotated cube
                     cv.at(r)[x][y][z] =  cv.at(r - 1)[x][length - 1 - z][y];
-
     return cv;
 }
 
@@ -92,15 +107,6 @@ Cube shift(const Cube& c, bool& sucess, int dx, int dy, int dz){
     return shifted;
 }
 
-bool operator== (const Cube& c1, const Cube& c2){
-    for(int x = 0; x < length; x++)
-        for(int y = 0; y < length; y++)
-            for(int z = 0; z < length; z++)
-                if (c1[x][y][z] != c2[x][y][z])
-                    return false;
-    return true;
-}
-
 string toString(const Cube& c){
     string str;
     for(int x = 0; x < length; x++)
@@ -110,12 +116,6 @@ string toString(const Cube& c){
     return str;
 }
 
-bool areSimilar(const Cube& c1, const Cube& c2){
-    for(Cube& fr : allFaceRotations(c1))
-            if (c2 == fr)
-                return true;
-    return false;
-}
 FastCube CubeToFastCube(const Cube& c){
     FastCube fc = 0;
     int ctr = 0;
@@ -134,5 +134,4 @@ Cube FastCubeToCube(FastCube fc){
             for(int z = 0; z < length; z++)
                 c[x][y][z] = (fc >> ctr++) & 1;
     return c;
-    
 }

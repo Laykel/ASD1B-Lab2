@@ -21,7 +21,7 @@
 
 using namespace std;
 using puzzleVector = vector<Puzzle>;
-using fastCubeVectorVector = std::vector<fastCubeVector>;
+using fastCubeVectorVector = vector<fastCubeVector>;
 
 // function to open a file with "filename" name, and append the contents of string
 void appendStringToFile(const string& str, const string& filename){
@@ -65,7 +65,6 @@ void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pi
                  << "%)        " << flush;
         }
     }
-    
 }
 
 // function that copies all of the unique solutions, from a piece swap duplication
@@ -174,7 +173,7 @@ void findSolutions(puzzleVector& solutions, const fastCubeVectorVector& uniquePi
     while(!tmp_sv.empty()){
         unsigned duplicates;
         auto it = remove(tmp_sv.begin(), tmp_sv.end(), tmp_sv.at(0));
-        duplicates = distance(it, tmp_sv.end());
+        duplicates = (unsigned) distance(it, tmp_sv.end());
         duplicateSolutions *= factorial(duplicates); 
         tmp_sv.resize(it - tmp_sv.begin());
     }
@@ -246,7 +245,7 @@ void bruteforceAllShapeCombinations(){
                                 // signature due to using prime numbers to sign each piece.
                                 unsigned signature = 1;
                                 
-                                for(int val : {i,j,k,l,m,n,o}){
+                                for(long unsigned val : {i,j,k,l,m,n,o}){
                                     cubeCount += SHAPE_TO_CUBES_COUNT[(int)Shape(val)];
                                     signature *= SHAPE_TO_SIGNATURE[(int)Shape(val)];
                                 }
@@ -318,8 +317,8 @@ int main() {
     
     // if we want to find all shape combinations with solutions, we do that, and quit
     if(findAllShapeCombinations){
-        bruteforceAllShapeCombinations();    
-        cout << "Press ENTER to quit : ";
+        bruteforceAllShapeCombinations();
+        cout << endl << "Press ENTER to quit : ";
         CLEAR_BUFFER;
         return 0;
     }

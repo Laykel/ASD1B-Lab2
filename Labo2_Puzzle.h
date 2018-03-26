@@ -15,6 +15,8 @@
 #include "Labo2_Types.h"
 
 class Puzzle {
+   friend bool operator== (const Puzzle& p1, const Puzzle& p2);
+
 public:
    Puzzle(const Cube& c = EMPTY_CUBE);
    Puzzle(FastCube fc);
@@ -27,7 +29,6 @@ public:
    bool isFilled() const;
    bool isValid() const;
    Cube getCodedCube(bool ShapeEncoding = false) const;
-   friend bool operator== (const Puzzle& p1, const Puzzle& p2);
    
 private:
     FastCube fc;
@@ -38,4 +39,3 @@ private:
 };
 
 #endif /* PUZZLE_H */
-
