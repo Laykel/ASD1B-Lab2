@@ -21,6 +21,8 @@ private:
     FastCube fc;
     fastCubeVector fcv;
     shapeVector sv;
+    fastCubeVector sortedfcv; 
+    bool sorted = false; 
 };
 
 #endif /* PUZZLE_H */
