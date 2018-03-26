@@ -1,3 +1,11 @@
+/**
+ \file   Labo2_Puzzle.cpp
+ \author Filipe Fortunato
+ \date   07.03.2018
+
+ Definition of the elements of the Puzzle class.
+*/
+
 #include "Labo2_Puzzle.h"
 #include <algorithm>
 

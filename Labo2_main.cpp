@@ -1,3 +1,13 @@
+/**
+ \file   Labo2_main.cpp
+ \author Filipe Fortunato
+ \date   07.03.2018
+
+ This file contains the bulk of the logic : the functions to calculate the shapes'
+ shifts, to bruteforce the solutions recursively and to answer the questions.
+ There are also utilities to write to a file and to compute certain values.
+*/
+
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -20,6 +30,7 @@ void appendStringToFile(const string& str, const string& filename){
     ofs.close();
 }
 
+// recursive function to get all solutions within the given parameters
 void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pieces,
                          const shapeVector& sv, Puzzle& p, size_t index, 
                          size_t wantedSolutions = -1, bool verbose = false){

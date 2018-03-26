@@ -1,3 +1,12 @@
+/**
+ \file   Labo2_Types.h
+ \author Filipe Fortunato
+ \date   07.03.2018
+
+ Definition of useful types and constants, and declaration of functions
+ to manipulate those types, convert between them.
+*/
+
 #ifndef TYPES_H
 #define TYPES_H
 #include <valarray>

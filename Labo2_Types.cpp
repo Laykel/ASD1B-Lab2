@@ -1,3 +1,11 @@
+/**
+ \file   Labo2_Types.cpp
+ \author Filipe Fortunato
+ \date   07.03.2018
+
+ Definition of various functions to manipulare shapes and other types.
+*/
+
 #include "Labo2_Types.h"
 
 using namespace std;
