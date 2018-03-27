@@ -1,6 +1,6 @@
 /**
  \file   Labo2_main.cpp
- \author Filipe Fortunato
+ \author Filipe Fortunato, Simon Walther, Luc Wachter
  \date   07.03.2018
 
  This file contains the bulk of the logic : the functions to calculate the shapes'
@@ -72,7 +72,7 @@ void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pi
 void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
                          bool verbose = false, bool saveSolutions = false){
     
-    unsigned ctr = 0, max_ctr = solutions.size();
+    long unsigned ctr = 0, max_ctr = solutions.size();
     for(Puzzle& p : solutions){
             ctr++;
         if(find(uniqueSolutions.begin(), uniqueSolutions.end(), p) == uniqueSolutions.end()){
@@ -308,7 +308,10 @@ void bruteforceAllShapeCombinations(){
 
 int main() {
     const bool findAllShapeCombinations = false;
+    const bool uniqueSolutions = true;
+    const bool allRotations = false;
     const unsigned solutionsWanted = -1;
+
     // verbose lvl 0 : cout only results
     // verbose lvl 1 : cout progress in bruteforce + results
     // verbose lvl 2 : cout progress in piece gen + results
@@ -340,9 +343,9 @@ int main() {
                   // the number of solutions wanted 
                   solutionsWanted,
                   // unique solution switch
-                  true, 
+                  uniqueSolutions, 
                   // all rotation switch (messing with both switches allows to get answers to questions 2->5)
-                  false, 
+                  allRotations, 
                   // verbose level, from 0 to 3.
                   verboseLevel);
                   
