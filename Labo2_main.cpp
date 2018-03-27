@@ -74,7 +74,7 @@ int main() {
 
     // To limit the number of solutions: solutionsWanted = <numberOfSolutions>
     // To remove the limit to the number of solutions: solutionsWanted = -1
-    const unsigned solutionsWanted = -1;
+    const unsigned solutionsWanted = 4;
 
     // verbose lvl 0 : cout only results
     // verbose lvl 1 : cout progress in bruteforce + results
@@ -85,7 +85,7 @@ int main() {
     // if we want to find all shape combinations with solutions, we do that, and quit
     if(findAllShapeCombinations){
         bruteforceAllShapeCombinations();
-        cout << endl << "Press ENTER to quit : ";
+        cout << endl << "Press ENTER to quit ";
         CLEAR_BUFFER;
         return 0;
     }
@@ -97,7 +97,6 @@ int main() {
     fastCubeVector fcvC{FCC}, fcvT{FCT}, fcvS{FCS1,FCS2}, fcvL{FCL1,FCL2};
     Shape Sc = Shape::C, St = Shape::T, Ss = Shape::S, Sl = Shape::L;
     
-    // piece vectors vector (vector containing all vectors defined above).
     findSolutions(// puzzleVector to store the solutions in
                   solutions,
                   // fastCubeVectorVector containing all piece sets to be used
@@ -117,7 +116,7 @@ int main() {
         cout << "Solution " << i + 1 << " " << toString(solutions.at(i).getCodedCube())
              << endl << solutions.at(i).getCodedCube();
              
-    cout << "Press ENTER to quit : ";
+    cout << "Press ENTER to quit ";
     CLEAR_BUFFER;
    return 0;
 }
