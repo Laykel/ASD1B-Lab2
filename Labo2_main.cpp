@@ -65,8 +65,8 @@ int main() {
     // uniqueSolutions = false, allRotations = false
     // To find solutions where the two preceding criteria are used:
     // uniqueSolutions = true, allRotations = false
-    const bool uniqueSolutions = false;
-    const bool allRotations = true;
+    const bool uniqueSolutions = true;
+    const bool allRotations = false;
 
     // To find all possible combinations of pieces that give a solution:
     // findAllShapeCombinations = true
