@@ -24,6 +24,105 @@ using puzzleVector = vector<Puzzle>;
 using fastCubeVectorVector = vector<fastCubeVector>;
 
 // function to open a file with "filename" name, and append the contents of string
+void appendStringToFile(const string& str, const string& filename);
+
+// recursive function to get all solutions within the given parameters
+void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pieces,
+                         const shapeVector& sv, Puzzle& p, size_t index, 
+                         size_t wantedSolutions = -1, bool verbose = false);
+
+// function that copies all of the unique solutions, from a piece swap duplication
+// point of view. can also save the found solutions to a "solutions.txt" file
+void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
+                         bool verbose = false, bool saveSolutions = false);
+
+// generate all valid shifts and add them to the vector if not present.
+void generateValidShifts(fastCubeVector& fcv);
+
+// generate all unique shifts, from a rotational point of view 
+// (if a shift can be found with a rotation of another shift, don't add it)
+void generateUniqueShifts(fastCubeVector& fcv);
+
+// recursively computes a factorial of a positive integer.
+unsigned factorial(unsigned n);
+
+// find the solutions we need, based on the parameters sent
+// flags allow us to look for the different answers we need
+void findSolutions(puzzleVector& solutions, const fastCubeVectorVector& uniquePieces,
+                   const shapeVector& sv, size_t wantedSolutions = -1, 
+                   bool genUniqueSolutions = false, bool genAllRotations = false,
+                   unsigned verboseLevel = 0);
+
+// messy code used to solve the last 2 questions, takes roughly 3-4 minutes of run time
+void bruteforceAllShapeCombinations();
+
+int main() {
+    // To find all solutions: 
+    // uniqueSolutions = false, allRotations = true
+    // To find solutions that only differ by a placement of an L piece:
+    // uniqueSolutions = true, allRotations = true
+    // To find solutions that only differ by the cube's rotation:
+    // uniqueSolutions = false, allRotations = false
+    // To find solutions where the two preceding criteria are used:
+    // uniqueSolutions = true, allRotations = false
+    const bool uniqueSolutions = false;
+    const bool allRotations = true;
+
+    // To find all possible combinations of pieces that give a solution:
+    // findAllShapeCombinations = true
+    const bool findAllShapeCombinations = false;
+
+    // To limit the number of solutions: solutionsWanted = <numberOfSolutions>
+    // To remove the limit to the number of solutions: solutionsWanted = -1
+    const unsigned solutionsWanted = -1;
+
+    // verbose lvl 0 : cout only results
+    // verbose lvl 1 : cout progress in bruteforce + results
+    // verbose lvl 2 : cout progress in piece gen + results
+    // verbose lvl 3 : cout both progresses + results
+    const unsigned verboseLevel = 1;
+    
+    // if we want to find all shape combinations with solutions, we do that, and quit
+    if(findAllShapeCombinations){
+        bruteforceAllShapeCombinations();
+        cout << endl << "Press ENTER to quit : ";
+        CLEAR_BUFFER;
+        return 0;
+    }
+        
+    puzzleVector solutions;
+    solutions.reserve(500000);
+    
+    // piece vectors (add any different shaped pieces to these).
+    fastCubeVector fcvC{FCC}, fcvT{FCT}, fcvS{FCS1,FCS2}, fcvL{FCL1,FCL2};
+    Shape Sc = Shape::C, St = Shape::T, Ss = Shape::S, Sl = Shape::L;
+    
+    // piece vectors vector (vector containing all vectors defined above).
+    findSolutions(// puzzleVector to store the solutions in
+                  solutions,
+                  // fastCubeVectorVector containing all piece sets to be used
+                  {fcvL, fcvL, fcvL, fcvL, fcvS, fcvT, fcvC}, 
+                  // shapeVector containing the shapes of each set used
+                  {Sl, Sl, Sl, Sl, Ss, St, Sc}, 
+                  // the number of solutions wanted 
+                  solutionsWanted,
+                  // unique solution switch
+                  uniqueSolutions, 
+                  // all rotation switch
+                  allRotations, 
+                  // verbose level, from 0 to 3.
+                  verboseLevel);
+                  
+    for(size_t i = 0; i < solutionsWanted && i < solutions.size() ; i++)
+        cout << "Solution " << i + 1 << " " << toString(solutions.at(i).getCodedCube())
+             << endl << solutions.at(i).getCodedCube();
+             
+    cout << "Press ENTER to quit : ";
+    CLEAR_BUFFER;
+   return 0;
+}
+
+// function to open a file with "filename" name, and append the contents of string
 void appendStringToFile(const string& str, const string& filename){
     ofstream ofs(filename, ofstream::app);
     ofs << str;
@@ -33,7 +132,7 @@ void appendStringToFile(const string& str, const string& filename){
 // recursive function to get all solutions within the given parameters
 void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pieces,
                          const shapeVector& sv, Puzzle& p, size_t index, 
-                         size_t wantedSolutions = -1, bool verbose = false){
+                         size_t wantedSolutions, bool verbose){
     // trivial error
     if (index <= 0)
         return;
@@ -70,7 +169,7 @@ void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pi
 // function that copies all of the unique solutions, from a piece swap duplication
 // point of view. can also save the found solutions to a "solutions.txt" file
 void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
-                         bool verbose = false, bool saveSolutions = false){
+                         bool verbose, bool saveSolutions){
     
     long unsigned ctr = 0, max_ctr = solutions.size();
     for(Puzzle& p : solutions){
@@ -128,19 +227,15 @@ unsigned factorial(unsigned n){
     return n * factorial(n - 1);
 }
 
-// verbose lvl 1 : no cout
-// verbose lvl 1 : cout only progress in bruteforce
-// verbose lvl 2 : cout only progress in piece gen
-// verbose lvl 3 : cout both progress
 void findSolutions(puzzleVector& solutions, const fastCubeVectorVector& uniquePieces,
-                   const shapeVector& sv, size_t wantedSolutions = -1, 
-                   bool genUniqueSolutions = false, bool genAllRotations = false,
-                   unsigned verboseLevel = 0){
+                   const shapeVector& sv, size_t wantedSolutions,
+                   bool genUniqueSolutions, bool genAllRotations,
+                   unsigned verboseLevel){
     time_t start = time(NULL);
     fastCubeVectorVector pieces;
     Puzzle p;
     
-    // if we don't want all rotations, we don't initialize the last piece automaticly
+    // if we don't want all rotations, we don't initialize the last piece automatically
     for(size_t i = 0; i < uniquePieces.size() - (genAllRotations? 0 : 1); i++){
         fastCubeVector fcv;
         for(const FastCube& fc : uniquePieces.at(i))
@@ -296,64 +391,12 @@ void bruteforceAllShapeCombinations(){
                                 cout << combination << endl << endl;
                                 solutions.resize(0);
                             }
-    cout << (time(NULL) - start) << " seconds to compute all solutions and unique solutions for all possible combinations of pieces that fit in a 3x3x3 cube.";
+    cout << (time(NULL) - start) << " seconds to compute all solutions and unique"
+         << " solutions for all possible combinations of pieces that fit in a 3x3x3 cube.";
     
     cout << endl << endl << "combinations with solutions : " << endl;
     for (const string& s : permutationsWithSolutions)
         cout << "    " << s << endl;
     cout << "combination with lowest solution count : " << endl << bestSolution
          << " (solution count : " << LowestSolutionCount / 2 << ")";
-}
-
-
-int main() {
-    const bool findAllShapeCombinations = false;
-    const bool uniqueSolutions = true;
-    const bool allRotations = false;
-    const unsigned solutionsWanted = -1;
-
-    // verbose lvl 0 : cout only results
-    // verbose lvl 1 : cout progress in bruteforce + results
-    // verbose lvl 2 : cout progress in piece gen + results
-    // verbose lvl 3 : cout both progresses + results
-    const unsigned verboseLevel = 3;
-    
-    // if we want to find all shape combinations with solutions, we do that, and quit
-    if(findAllShapeCombinations){
-        bruteforceAllShapeCombinations();
-        cout << endl << "Press ENTER to quit : ";
-        CLEAR_BUFFER;
-        return 0;
-    }
-        
-    puzzleVector solutions;
-    solutions.reserve(500000);
-    
-    // piece vectors (add any different shaped pieces to these).
-    fastCubeVector fcvC{FCC}, fcvT{FCT}, fcvS{FCS1,FCS2}, fcvL{FCL1,FCL2};
-    Shape Sc = Shape::C, St = Shape::T, Ss = Shape::S, Sl = Shape::L;
-    
-    // piece vectors vector (vector containing all vectors defined above).
-    findSolutions(// puzzleVector to store the solutions in
-                  solutions,
-                  // fastCubeVectorVector containing all piece sets to be used
-                  {fcvL, fcvL, fcvL, fcvL, fcvS, fcvT, fcvC}, 
-                  // shapeVector containing the shapes of each set used
-                  {Sl, Sl, Sl, Sl, Ss, St, Sc}, 
-                  // the number of solutions wanted 
-                  solutionsWanted,
-                  // unique solution switch
-                  uniqueSolutions, 
-                  // all rotation switch (messing with both switches allows to get answers to questions 2->5)
-                  allRotations, 
-                  // verbose level, from 0 to 3.
-                  verboseLevel);
-                  
-    for(size_t i = 0; i < solutionsWanted && i < solutions.size() ; i++)
-        cout << "Solution " << i + 1 << " " << toString(solutions.at(i).getCodedCube())
-             << endl << solutions.at(i).getCodedCube();
-             
-    cout << "Press ENTER to quit : ";
-    CLEAR_BUFFER;
-   return 0;
 }
