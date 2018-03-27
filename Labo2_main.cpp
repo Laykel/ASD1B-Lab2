@@ -72,7 +72,7 @@ void bruteforceSolutions(puzzleVector& solutions, const fastCubeVectorVector& pi
 void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
                          bool verbose = false, bool saveSolutions = false){
     
-    unsigned ctr = 0;
+    unsigned ctr = 0, max_ctr = solutions.size();
     for(Puzzle& p : solutions){
             ctr++;
         if(find(uniqueSolutions.begin(), uniqueSolutions.end(), p) == uniqueSolutions.end()){
@@ -81,7 +81,7 @@ void copyUniqueSolutions(puzzleVector& solutions, puzzleVector& uniqueSolutions,
                 string tmp = toString(p.getCodedCube(false)) + " : " + toString(p.getCodedCube(true)) + '\n';
                 appendStringToFile(tmp, "solutions.txt");
             }
-            if(verbose && ctr % 5 == 0)
+            if(verbose && (ctr % 10 == 0 || ctr == max_ctr))
                 cout << "\rcopying unique solutions (Progress : " << ctr << "/" 
                      << solutions.size() << ")" << flush;
         }
@@ -308,7 +308,7 @@ void bruteforceAllShapeCombinations(){
 
 int main() {
     const bool findAllShapeCombinations = false;
-    const unsigned solutionsWanted = 4;
+    const unsigned solutionsWanted = -1;
     // verbose lvl 0 : cout only results
     // verbose lvl 1 : cout progress in bruteforce + results
     // verbose lvl 2 : cout progress in piece gen + results

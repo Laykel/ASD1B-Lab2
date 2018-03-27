@@ -11,8 +11,11 @@
 
 using namespace std;
 
-// two puzzles are the same if they have "similar" solutions
+// two puzzles are the same if they have the same fast cube components, regardless of order
+// 
 bool operator== (const Puzzle& p1, const Puzzle& p2) {
+    return equal(p1.sortedfcv.begin(), p1.sortedfcv.end(), p2.sortedfcv.begin());
+   
     for(size_t i = 0; i < p1.sortedfcv.size() && i < p2.sortedfcv.size(); i++)
         if(p1.sortedfcv.at(i) != p2.sortedfcv.at(i)) 
             return false;
